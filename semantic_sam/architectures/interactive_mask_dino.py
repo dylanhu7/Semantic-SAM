@@ -304,8 +304,13 @@ class GeneralizedMaskDINO(nn.Module):
         if mask_features is None or multi_scale_features is None:
 
             features = self.backbone(images.tensor)
+            # save to file
+            torch.save(features, 'backbone_features.pt')
             mask_features, transformer_encoder_features, multi_scale_features = self.sem_seg_head.pixel_decoder.forward_features(
                 features, None)
+            torch.save(mask_features, 'mask_features.pt')
+            torch.save(multi_scale_features, 'multi_scale_features.pt')
+            torch.save(transformer_encoder_features, 'transformer_encoder_features.pt')
         outputs, mask_dict = self.sem_seg_head.predictor(multi_scale_features, mask_features, None, targets=targets,
                                      target_queries=None, target_vlp=None, task='demo', extra=prediction_switch)
         pred_ious=None
